@@ -62,7 +62,7 @@
 
                         <div class="row">
                             <div class="container d-flex justify-content-center mb-3">
-                                <h1>Sign-In</h1>
+                                <h1>Sign In</h1>
                             </div>
                         </div>
 
