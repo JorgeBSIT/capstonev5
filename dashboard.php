@@ -168,8 +168,11 @@
                 <div class="col-sm-4">
                     <div class="row">
                         <div class="container shadow-lg p-3 mb-5 bg-body rounded">
-                            <div class="card chart-container">
+                            <!-- <div class="card chart-container">
                                 <canvas id="chart"></canvas>
+                            </div> -->
+                            <div class="chart-container pie-chart">
+                                <canvas id="doughnut_chart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -468,6 +471,68 @@
     <script src="lib/sweetalert.min.js"></script>
     <script src="script/signOut.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+    <script>
+        $(document).ready(function() {
+
+            makechart();
+
+            function makechart()
+            {
+                $.ajax({
+                    url:"dashboard/donut.php",
+                    method:"POST",
+                    data:{action:'fetch'},
+                    dataType:"JSON",
+                    success: function(data)
+                    {
+                        var name = [];
+                        var total = [];
+                        var color = [];
+
+                        for(var i = 0; i < data.length; i++)
+                        {
+                            name.push(data[i].name);
+                            total.push(data[i].total);
+                            color.push(data[i].color);
+                        }
+
+
+
+                        var chart_data = {
+                            labels: name,
+                            datasets:[
+                                {
+                                    label:'Vote',
+                                    backgroundColor:color,
+                                    color:'#fff',
+                                    data:total
+                                }
+                            ]
+                        };
+
+                        var options = {
+                            responsive:true,
+                            scales:{
+                                yAxes:[{
+                                    ticks:{
+                                        min:0
+                                    }
+                                }]
+                            }
+                        };
+
+                        var group_chart2 = $('#doughnut_chart');
+
+                        var graph2 = new Chart(group_chart2, {
+                            type:"doughnut",
+                            data:chart_data
+                        });
+                    }
+                })
+            }
+        });
+    </script>
+
     <script>
         const ctx = document.getElementById("chart").getContext('2d');
         const myChart = new Chart(ctx, {

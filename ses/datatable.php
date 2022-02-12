@@ -1,3 +1,7 @@
+<?php
+    session_start();
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -126,10 +130,10 @@
                     id: arr_id,
                     name: arr_name,
                     quantity: arr_quantity,
-                    qty: arr_qty,
+                    qty: arr_qty
                 },
                 success: function(data) {
-                    console.log(data);
+                    window.location.replace("datatable.php");
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr);
@@ -146,66 +150,64 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
     <script>
-    $(document).ready(function() {
+        $(document).ready(function() {
 
-        makechart();
+            makechart();
 
-        function makechart()
-        {
-            $.ajax({
-                url:"aaa.php",
-                method:"POST",
-                data:{action:'fetch'},
-                dataType:"JSON",
-                success:function(data)
-                {
-                    var id = [];
-                    var name = [];
-                    var qty = [];
-                    var color = [];
-
-                    for(var i = 0; i < data.length; i++)
+            function makechart()
+            {
+                $.ajax({
+                    url:"aaa.php",
+                    method:"POST",
+                    data:{action:'fetch'},
+                    dataType:"JSON",
+                    success:function(data)
                     {
-                        id.push(data[i].id);
-                        name.push(data[i].name);
-                        qty.push(data[i].qty);
-                        color.push(data[i].color);
-                    }
+                        var name = [];
+                        var qty = [];
+                        var color = [];
 
-                    var chart_data = {
-                        labels:name,
-                        datasets:[
-                            {
-                                label:'Vote',
-                                backgroundColor:color,
-                                color:'#fff',
-                                data:qty
-                            }
-                        ]
-                    };
-
-                    var options = {
-                        responsive:true,
-                        scales:{
-                            yAxes:[{
-                                ticks:{
-                                    min:0
-                                }
-                            }]
+                        for(var i = 0; i < data.length; i++)
+                        {
+                            name.push(data[i].name);
+                            qty.push(data[i].qty);
+                            color.push(data[i].color);
                         }
-                    };
 
-                    var group_chart3 = $('#bar_chart');
+                        var chart_data = {
+                            labels:name,
+                            datasets:[
+                                {
+                                    label:'Vote',
+                                    backgroundColor:color,
+                                    color:'#fff',
+                                    data:qty
+                                }
+                            ]
+                        };
 
-                    var graph3 = new Chart(group_chart3, {
-                        type:'bar',
-                        data:chart_data,
-                        options:options
-                    });
-                }
-            })
-        }
-    });
+                        var options = {
+                            responsive:true,
+                            scales:{
+                                yAxes:[{
+                                    ticks:{
+                                        min:0
+                                    }
+                                }]
+                            }
+                        };
+
+                        var group_chart3 = $('#bar_chart');
+
+                        var graph3 = new Chart(group_chart3, {
+                            type:'bar',
+                            data:chart_data,
+                            options:options
+                        });
+                    }
+                })
+            }
+        });
     </script>
 
     <div style="height: 150px;"></div>
@@ -275,6 +277,27 @@
         }
     });
     </script>
+    <script src="../lib/sweetalert.min.js"></script>
+
+    <?php
+        if(isset($_SESSION["status"]) && $_SESSION["status"] != "")
+        {
+        ?>
+            <script>
+                swal({
+                    title: "<?php echo $_SESSION["title"] ?>",
+                    text: "<?php echo $_SESSION["text"] ?>",
+                    icon: "<?php echo $_SESSION["icon"] ?>",
+                    button: "Okay",
+                });
+            </script>
+        <?php
+            unset($_SESSION["status"]);
+            unset($_SESSION["title"]);
+            unset($_SESSION["text"]);
+            unset($_SESSION["icon"]);
+        }
+    ?>
 
     <div style="height: 150px;"></div>
 

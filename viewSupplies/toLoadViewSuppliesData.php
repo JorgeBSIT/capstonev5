@@ -56,8 +56,11 @@
                                 <td class="quantity">'.$row["quantity"].'</td>
                                 <td class="date_arrived">'.$row["date_arrived"].'</td>
                                 <td class="description">'.$row["description"].'</td>
-                                <td><button type="button" class="btnDistribute" data-bs-toggle="modal" data-bs-target="#distributeModal" style="background-color: green; color: white; border: none; border-radius: 2px; padding: 10px;">Distribute</button></td>
+
+                                <td><button type="button" class="btnSelect" style="background-color: green; color: white; border: none; border-radius: 2px; padding: 10px;">Select</button></td>
+
                                 <td><button type="button" class="btnEdit" data-bs-toggle="modal" data-bs-target="#editModal" style="background-color: #ff7a05; color: white; border: none; border-radius: 2px; padding: 10px;">Edit</button></td>
+
                                 <td><button type="button" class="btnDelete" data-bs-toggle="modal" data-bs-target="#deleteModal" style="background-color: #b50505; color: white; border: none; border-radius: 2px; padding: 10px;">Delete</button></td>
                             </tr>';
                         }
@@ -100,7 +103,7 @@
                                 <td class="quantity">'.$row["quantity"].'</td>
                                 <td class="date_arrived">'.$row["date_arrived"].'</td>
                                 <td class="description">'.$row["description"].'</td>
-                                <td><button type="button" class="btnDistribute" data-bs-toggle="modal" data-bs-target="#distributeModal" style="background-color: green; color: white; border: none; border-radius: 2px; padding: 10px;">Distribute</button></td>
+                                <td><button type="button" class="btnSelect" style="background-color: green; color: white; border: none; border-radius: 2px; padding: 10px;">Select</button></td>
                             </tr>';
                         }
                     }
@@ -112,7 +115,6 @@
         }
     }
 
-    echo "<script src='viewSupplies/distribute.js'></script>";
     echo "<script src='viewSupplies/edit.js'></script>";
     echo "<script src='viewSupplies/delete.js'></script>";
 ?>

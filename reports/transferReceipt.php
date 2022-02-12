@@ -3,7 +3,7 @@
 
 	if(!isset($_SESSION["username"]) && !isset($_SESSION["password"]))
 	{
-        header('Location: signin.php');
+        header('Location: index.php');
         exit();
 	}
 ?>

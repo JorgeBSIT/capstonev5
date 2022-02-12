@@ -28,7 +28,7 @@
 
     <link rel="icon" type="image/x-icon" href="img/icon.png">
 
-    <title>Condemn Receipt</title>
+    <title>Supply Receipt</title>
 </head>
 <body>
     <div>
@@ -52,7 +52,7 @@
             <div class="col-sm-1"></div>
 
             <div class="col-sm-10 d-flex justify-content-center">
-                <h2 class="fs-5 text-center mt-3">CONDEMN RECEIPT</h2>
+                <h2 class="fs-5 text-center mt-3">SUPPLY RECEIPT</h2>
             </div>
 
             <div class="col-sm-1"></div>
@@ -64,7 +64,7 @@
             <div class="col-sm-1"></div>
 
             <div class="col-sm-10 d-flex justify-content-center">
-                <h2 class="fs-5 text-center">PHYSICAL INVENTORY FOR PROPERTY, PLANT, AND EQUIPMENT CONDEMN RECEIPT</h2>
+                <h2 class="fs-5 text-center">PHYSICAL INVENTORY FOR PROPERTY, PLANT, AND SUPPLY RECEIPT</h2>
             </div>
 
             <div class="col-sm-1"></div>
@@ -88,32 +88,6 @@
         </div>
 
         <div class="row">
-            <p class="fw-bolder">Person In Charge: <span class="fw-normal">
-                <?php
-                    $servername='localhost';
-                    $username='u581335818_capstonev5_db';
-                    $password='TBwK?U9i!9r';
-                    $dbname = "u581335818_capstonev5_db";
-                
-                    $con = mysqli_connect($servername, $username, $password, $dbname);
-
-                    $personInCharge = "";
-
-                    $select = "SELECT * FROM cart_condemn_equipment";
-                    $result = mysqli_query($con, $select);
-
-                    if(mysqli_num_rows($result) > 0) {
-                        while($row = $result->fetch_assoc()) {
-                            $personInCharge = $row['in_charge'];
-                        }
-                    }
-
-                    echo ucwords($personInCharge);
-                ?>
-            </span></p>
-        </div>
-
-        <div class="row">
             <p class="fw-bolder">Date: <span class="fw-normal">
                 <?php
                     $servername='localhost';
@@ -125,12 +99,12 @@
 
                     $personInCharge = "";
 
-                    $select = "SELECT * FROM cart_condemn_equipment";
+                    $select = "SELECT * FROM cart_supply";
                     $result = mysqli_query($con, $select);
 
                     if(mysqli_num_rows($result) > 0) {
                         while($row = $result->fetch_assoc()) {
-                            $date = $row['condemn_date'];
+                            $date = $row['distributed_date'];
                         }
                     }
 
@@ -146,16 +120,15 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Distribution No</th>
-                            <th scope="col">Equipement Id</th>
-                            <th scope="col">Equipement Name</th>
-                            <th scope="col">Equipement Brand</th>
+                            <th scope="col">Supply Id</th>
+                            <th scope="col">Supply Name</th>
+                            <th scope="col">Supply Brand</th>
+                            <th scope="col">Supply Unit</th>
                             <th scope="col">Description</th>
-                            <th scope="col">Distribution Date</th>
+                            <th scope="col">Distributed Date</th>
                             <th scope="col">Location</th>
-                            <th scope="col">Person in charge</th>
-                            <th scope="col">Date Condemned</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Status</th>
+                            <th scope="col">Distributed Quantity</th>
+                            <th scope="col">Received By</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -172,20 +145,19 @@
                             $dt = new DateTime(date("Y-m-d"));
                             $year = $dt->format("Y");
 
-                            $select = "SELECT * FROM cart_condemn_equipment";
+                            $select = "SELECT * FROM cart_supply";
                             $result = mysqli_query($con, $select);
 
-                            $distribution_no = [];
+							$distribution_no = [];
                             $id = [];
                             $name = [];
                             $brand = [];
+							$unit = [];
                             $description = [];
-                            $date_distributed = [];
+                            $distributed_date = [];
                             $location = [];
-                            $in_charge = [];
-                            $condemn_date = [];
-                            $condemn_quantity = [];
-                            $status = [];
+                            $distributed_quantity = [];
+                            $received_by = [];
                             $index = 0;
 
                             if($result->num_rows > 0) {
@@ -193,14 +165,13 @@
                                     $distribution_no[$index] = $row["distribution_no"];
                                     $id[$index] = $row["id"];
                                     $name[$index] = $row["name"];
-                                    $brand[$index] = $row["brand"];
+									$brand[$index] = $row["brand"];
+                                    $unit[$index] = $row["unit"];
                                     $description[$index] = $row["description"];
-                                    $date_distributed[$index] = $row["date_distributed"];
+                                    $distributed_date[$index] = $row["distributed_date"];
                                     $location[$index] = $row["location"];
-                                    $in_charge[$index] = $row["in_charge"];
-                                    $condemn_date[$index] = $row["condemn_date"];
-                                    $condemn_quantity[$index] = $row["condemn_quantity"];
-                                    $status[$index] = $row["status"];
+                                    $distributed_quantity[$index] = $row["distributed_quantity"];
+                                    $received_by[$index] = $row["received_by"];
 
                                     echo "<tr>";
                                         echo "<th>".$counter++."</th>";
@@ -208,20 +179,24 @@
                                         echo "<td>".$id[$index]."</td>";
                                         echo "<td>".$name[$index]."</td>";
                                         echo "<td>".$brand[$index]."</td>";
+                                        echo "<td>".$unit[$index]."</td>";
                                         echo "<td>".$description[$index]."</td>";
-                                        echo "<td>".$date_distributed[$index]."</td>";
+                                        echo "<td>".$distributed_date[$index]."</td>";
                                         echo "<td>".$location[$index]."</td>";
-                                        echo "<td>".$in_charge[$index]."</td>";
-                                        echo "<td>".$condemn_date[$index]."</td>";
-                                        echo "<td>".$condemn_quantity[$index]."</td>";
-                                        echo "<td>".$status[$index]."</td>";
+                                        echo "<td>".$distributed_quantity[$index]."</td>";
+                                        echo "<td>".$received_by[$index]."</td>";
                                     echo "</tr>";
 
                                     $index++;
                                 }
                             }
 
-                            $delete = "DELETE FROM cart_condemn_equipment";
+							for($i = 0; $i < count($id); $i++) {
+								$insert = "INSERT INTO pending_supply (distribution_no, id, name, brand, unit, description, distributed_date, location, distributed_quantity, received_by) VALUES ('$distribution_no[$i]', '$id[$i]', '$name[$i]', '$brand[$i]', '$unit[$i]', '$description[$i]', '$distributed_date[$i]', '$location[$i]', '$distributed_quantity[$i]', '$received_by[$i]')";
+								$result = mysqli_query($con, $insert);
+							}
+
+                            $delete = "DELETE FROM cart_supply";
                             $result = mysqli_query($con, $delete);
 
                             mysqli_close($con);

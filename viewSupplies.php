@@ -3,7 +3,7 @@
 
 	if(!isset($_SESSION["username"]) && !isset($_SESSION["password"]))
 	{
-        header('Location: signin.php');
+        header('Location: viewSupplies.php');
         exit();
 	}
 ?>
@@ -18,6 +18,8 @@
     <!-- Jquery -->
     <script src="lib/jquery-3.6.0.min.js"></script>
     <script src="lib/jquery.validate.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -135,7 +137,7 @@
         <div class="col py-3">
             <h1>View Supplies</h1>
             <hr>
-
+            
             <div class="container shadow-lg p-3 mb-5 bg-body rounded">
                 <div class="container">
                     <div class="row">
@@ -166,514 +168,144 @@
                         
                     </div>
                 </div>
-            </div>
 
-            <!-------- Add Supply Modal -------->
-            <!-------- Add Supply Modal -------->
-            <!-------- Add Supply Modal -------->
-            <!-------- Add Supply Modal -------->
-            <!-------- Add Supply Modal -------->
-            <div class="modal fade" id="addSupplyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2 class="modal-title" id="staticBackdropLabel">Add Supply</h2>
-                        </div>
-                        <form action="viewSupplies/toAddSupply.php" id="add-supply" method="POST">
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-sm-2"></div>
+                <div class="container d-flex justify-content-center mb-3">
+                    <h2>Selected Supply</h2>
+                </div>
 
-                                    <div class="col-sm-8">
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <img src="img/BULSU-LOGO.png" class="rounded mx-auto d-block" alt="bulsu-logo" style="width: 200px;">
-                                            </div>
-                                        </div>
-                                        
-                                        <?php
-                                            $valid = true;
+                <div style="height: 500px;" class="overflow-scroll mb-3">
+                    <table class="table table-striped table-hover table-bordered text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">Supply Id</th>
+                                <th scope="col">Supply Name</th>
+                                <th scope="col">Supply Brand</th>
+                                <th scope="col">Supply Unit</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Supply Quantity</th>
+                                <th scope="col">Distribution Date</th>
+                                <th scope="col">Location</th>
+                                <th scope="col">Distribution Quantity</th>
+                                <th scope="col">Received By</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="selected-supply">
 
-                                            $empId = 0;
+                        </tbody>
+                    </table>
+                </div>
 
-                                            $code = "SPLY-";
-                                            $dt = new DateTime();
-                                            $getYear = $dt->format("Y");
-
-                                            $randNum = rand(1000000,10000000);
-                                            $year = "-" . $getYear;
-                                            $empId = $code . strval($randNum) . $year;
-
-                                            $servername='localhost';
-                                            $username='u581335818_capstonev5_db';
-                                            $password='TBwK?U9i!9r';
-                                            $dbname = "u581335818_capstonev5_db";
-
-                                            $con = mysqli_connect($servername, $username, $password, $dbname);
-
-                                            if(!$con){
-                                                die('Could not Connect My Sql:' .mysql_error());
-                                                exit();
-                                            }
-
-                                            $select = "SELECT * FROM supply_inventory";
-                                            $result = mysqli_query($con, $select);
-
-                                            if($result->num_rows > 0) {
-                                                while($row = $result->fetch_assoc()) {
-                                                    if($empId == $row["id"]) {
-                                                        header("Refresh: 0; url=addSupply.php");
-                                                    }
-                                                }
-                                            }
-
-                                            echo
-                                            "<div class='row'>
-                                                <div class='form-group mb-3'>
-                                                    <input type='text' name='supplyId' id='supplyId' placeholder='Supply Id' class='form-control form-cntrol-sm' readonly value='".$empId."'>
-                                                </div> 
-                                            </div>";
-                                        ?>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <input type="text" class="form-control" name="supplyName" id="supplyName" aria-describedby="supplyNameHelp" placeholder="Supply Name">
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <input type="text" class="form-control" name="supplyBrand" id="supplyBrand" aria-describedby="supplyBrandHelp" placeholder="Brand">
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <input type="text" class="form-control" name="supplyReceiversName" id="supplyReceiversName" aria-describedby="supplyReceiversNameHelp" placeholder="Receiver's Name">
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <select class="form-select" aria-label="Supply Unit Select" name="supplyUnit" id="supplyUnit">
-                                                    <option value="" disabled="disabled" selected>Choose a unit</option>
-                                                    <option value="per bottle">per bottle</option>
-                                                    <option value="per rim">per rim</option>
-                                                    <option value="per box">per box</option>
-                                                    <option value="per sachet">per sachet</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <input type="number" class="form-control" name="supplyQuantity" id="supplyQuantity" aria-describedby="supplyQuantityHelp" placeholder="Quantity">
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <label for="supplyDateArrived" class="form-label">Date Arrived</label>
-                                                <input type="date" class="form-control" name="supplyDateArrived" id="supplyDateArrived" aria-describedby="supplyDateArrivedHelp" placeholder="Date Arrived">
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <textarea class="form-control" name="supplyOtherInfo" id="supplyOtherInfo" rows="5" placeholder="Description. . ."></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-2"></div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetSupplyForm()">Close</button>
-                                <button type="submit" class="btn btn-primary">Save</button>
-                            </div>
-                        </form>
-                    </div>
+                <div class="container">
+                    <button type="button" id="done" style="background-color: gray; color: white; border: none; border-radius: 2px; padding: 10px;" disabled>submit</button>
                 </div>
             </div>
-            
-            <!-------- Distribute Modal -------->
-            <!-------- Distribute Modal -------->
-            <!-------- Distribute Modal -------->
-            <!-------- Distribute Modal -------->
-            <!-------- Distribute Modal -------->
-            <div class="modal fade" id="distributeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2 class="modal-title" id="staticBackdropLabel">Distribute Supply</h2>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form action="viewSupplies/toDistributeSupply.php" method="POST" id="distribute-supply">
-                        <div class="modal-body">
-                            <div class="container">
-                                <div class="row-sm-3"></div>
-
-                                <div class="row-sm-6">
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <img src="img/BULSU-LOGO.png" class="rounded mx-auto d-block" alt="bulsu-logo" style="width: 200px;">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <fieldset>
-                                        <legend>Supply Details</legend>
-                                        <hr>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <input type="text" name="supply_id_distribute" id="supply_id_distribute" placeholder="Supply Id" class="form-control form-cntrol-sm" readonly>
-                                            </div> 
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <input type="text" class="form-control" name="supply_name_distribute" id="supply_name_distribute" placeholder="Supply Name" readonly>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <input type="text" class="form-control" name="supply_brand_distribute" id="supply_brand_distribute" placeholder="Brand" readonly>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <input type="text" class="form-control" name="supply_unit_distribute" id="supply_unit_distribute" placeholder="Supply Unit" readonly>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <input type="number" class="form-control" name="supply_quantity_distribute" id="supply_quantity_distribute" placeholder="Quantity" readonly>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <textarea class="form-control" name="supply_description_distribute" id="supply_description_distribute" rows="5" placeholder="Description. . ." readonly></textarea>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-
-                                    <fieldset>
-                                        <legend>Distribution Details</legend>
-                                        <hr>
-
-                                        <?php
-                                            $valid = true;
-
-                                            $empId = 0;
-            
-                                            $code = "SPDT-";
-                                            $dt = new DateTime();
-                                            $getYear = $dt->format("Y");
-            
-                                            $randNum = rand(1000000,10000000);
-                                            $year = $getYear;
-                                            $empId = $code . strval($randNum) . "-" . $year;
-            
-                                            $servername='localhost';
-                                            $username='u581335818_capstonev5_db';
-                                            $password='TBwK?U9i!9r';
-                                            $dbname = "u581335818_capstonev5_db";
-            
-                                            $con = mysqli_connect($servername, $username, $password, $dbname);
-            
-                                            if(!$con){
-                                                die('Could not Connect My Sql:' .mysql_error());
-                                                exit();
-                                            }
-            
-                                            $select = "SELECT * FROM supply_inventory";
-                                            $result = mysqli_query($con, $select);
-            
-                                            if($result->num_rows > 0) {
-                                                while($row = $result->fetch_assoc()) {
-                                                    if($empId == $row["id"]) {
-                                                        header("Refresh: 0; url=viewSupplies.php");
-                                                    }
-                                                }
-                                            }
-    
-                                            echo
-                                            "<div class='row'>
-                                                <div class='form-group mb-3'>
-                                                    <input type='text' name='distribution_no' id='distribution_no' placeholder='Distribution No' class='form-control form-cntrol-sm' readonly value='".$empId."'>
-                                                </div> 
-                                            </div>";
-                                        ?>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <label for="distribution_date" class="form-label">Distribution Date</label>
-                                                <input type="date" class="form-control" name="distribution_date" id="distribution_date" placeholder="Distribution Date">
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <?php include "util/bulsuOffices.php"; distributeSupplyOffices(); ?>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <input type="number" class="form-control" name="distribution_quantity" id="distribution_quantity" aria-describedby="distributeQuantityHelp" placeholder="Enter Quantity to be distributed...">
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="form-group mb-3">
-                                                <input type="text" class="form-control" name="received_by" id="received_by" placeholder="Will be receive by...">
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </div>
-
-                                <div class="row-sm-3"></div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Done</button>
-                        </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-------- Edit Modal -------->
-            <!-------- Edit Modal -------->
-            <!-------- Edit Modal -------->
-            <!-------- Edit Modal -------->
-            <!-------- Edit Modal -------->
-            <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2 class="modal-title" id="staticBackdropLabel">Edit Supply</h2>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form action="viewSupplies/toEditSupply.php" method="POST" id="edit-supply">
-                        <div class="modal-body">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="row-sm-3"></div>
-
-                                    <div class="row-sm-6">
-                                        <div class="container">
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <img src="img/BULSU-LOGO.png" class="rounded mx-auto d-block" alt="bulsu-logo" style="width: 200px;">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <fieldset>
-                                            <legend>Supply Details</legend>
-                                            <hr>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <input type="text" name="supply_id_edit" id="supply_id_edit" placeholder="Supply Id" class="form-control form-cntrol-sm" readonly>
-                                                </div> 
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <input type="text" class="form-control" name="supply_name_edit" id="supply_name_edit" placeholder="Supply Name">
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <input type="text" class="form-control" name="supply_brand_edit" id="supply_brand_edit" placeholder="Brand">
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <input type="text" class="form-control" name="supply_receivers_name_edit" id="supply_receivers_name_edit" placeholder="Receiver's Name">
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <input type="text" class="form-control" name="supply_unit_edit" id="supply_unit_edit" placeholder="Supply Unit" readonly>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <select class="form-select" aria-label="supply_unit_select" name="supplyUnit" id="supplyUnit" onchange="changeUnit(event)">
-                                                        <option value="" disabled="disabled" selected>Choose a unit</option>
-                                                        <option value="per bottle">per bottle</option>
-                                                        <option value="per rim">per rim</option>
-                                                        <option value="per box">per box</option>
-                                                        <option value="per sachet">per sachet</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <input type="number" class="form-control" name="supply_quantity_edit" id="supply_quantity_edit" placeholder="Quantity">
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <label for="supply_date_arrived_edit" class="form-label">Date Arrived</label>
-                                                    <input type="date" class="form-control" name="supply_date_arrived_edit" id="supply_date_arrived_edit" placeholder="Distribution Date">
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <textarea class="form-control" name="supply_description_edit" id="supply_description_edit" rows="5" placeholder="Description. . ."></textarea>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                    </div>
-
-                                    <div class="row-sm-3"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            
-            <!-------- Delete Modal -------->
-            <!-------- Delete Modal -------->
-            <!-------- Delete Modal -------->
-            <!-------- Delete Modal -------->
-            <!-------- Delete Modal -------->
-            <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2 class="modal-title" id="staticBackdropLabel">Delete Supply</h2>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form action="viewSupplies/toDeleteSupply.php" method="POST">
-                        <div class="modal-body">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="row-sm-3"></div>
-
-                                    <div class="row-sm-6">
-                                    <div class="container">
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <img src="img/BULSU-LOGO.png" class="rounded mx-auto d-block" alt="bulsu-logo" style="width: 200px;">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex justify-content-center">
-                                            <img src="img/warning.png" class="rounded mx-auto d-block" alt="..." style="width: 150px;">
-                                        </div>
-
-                                        <div class="d-flex justify-content-center" style="height: 100px;">
-                                            <h3 style="color: red;">Are you sure you want to delete this supply?</h3>
-                                        </div>
-
-                                        <fieldset>
-                                            <legend>Supply Details</legend>
-                                            <hr>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <input type="text" name="supply_id_delete" id="supply_id_delete" placeholder="Supply Id" class="form-control form-cntrol-sm" readonly>
-                                                </div> 
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <input type="text" class="form-control" name="supply_name_delete" id="supply_name_delete" placeholder="Supply Name" readonly>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <input type="text" class="form-control" name="supply_brand_delete" id="supply_brand_delete" placeholder="Brand" readonly>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <input type="text" class="form-control" name="supply_receivers_name_delete" id="supply_receivers_name_delete" placeholder="Receiver's Name" readonly>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <input type="text" class="form-control" name="supply_unit_delete" id="supply_unit_delete" placeholder="Supply Unit" readonly>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <input type="number" class="form-control" name="supply_quantity_delete" id="supply_quantity_delete" placeholder="Quantity" readonly>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <label for="supply_date_arrived_delete" class="form-label">Date Arrived</label>
-                                                    <input type="date" class="form-control" name="supply_date_arrived_delete" id="supply_date_arrived_delete" placeholder="Distribution Date" readonly>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group mb-3">
-                                                    <textarea class="form-control" name="supply_description_delete" id="supply_description_delete" rows="5" placeholder="Description. . ." readonly></textarea>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                    </div>
-
-                                    <div class="row-sm-3"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Delete</button>
-                        </div>
-                    </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        </div>  
     </div>
 
-    <script src="viewSupplies/validateEditSupply.js"></script>
-    <script src="viewSupplies/validateDistributeSupply.js"></script>
-    <script src="viewSupplies/loadViewSuppliesData.js"></script>
     <script src="lib/sweetalert.min.js"></script>
     <script src="script/signOut.js"></script>
-    <script src="viewSupplies/validateAddSupply.js"></script>
+    <script src="viewSupplies/loadViewSuppliesData.js"></script>
+    <script>
+        $(document).on("click", ".btnSelect", function () {
+            var $id = $(this).closest("tr").find(".id").text();
+            var $name = $(this).closest("tr").find(".name").text();
+            var $brand = $(this).closest("tr").find(".brand").text();
+            var $unit = $(this).closest("tr").find(".unit").text();
+            var $quantity = $(this).closest("tr").find(".quantity").text();
+            var $description = $(this).closest("tr").find(".description").text();
+
+            $("#selected-supply").append("<tr><td class='id'>"+$id+"</td><td class='name'>"+$name+"</td><td class='brand'>"+$brand+"</td><td class='unit'>"+$unit+"</td><td class='description'>"+$description+"</td><td class='quantity'>"+$quantity+"</td><td><input type='date' class='distributed_date'></td><td><select class='location'><option value='' selected='true' disabled='disabled'>Select Destination</option><option value='' disabled='disabled'>Executeive Offices</option><option value='Office of the University President'>Office of the University President</option><option value='Office of the Executive Vice President'>Office of the Executive Vice President</option><option value='Office of the Vice President for Research, Development, and Extension'>Office of the Vice President for Research, Development, and Extension</option><option value='Office of the Vice President for Administration and Finance'>Office of the Vice President for Administration and Finance</option><option value='Office of the Vice President for Academic Affairs'>Office of the Vice President for Academic Affairs</option><option value='' disabled='disabled'>Dean\'s Office</option><option value='College of Architecture and Fine Arts'>College of Architecture and Fine Arts</option><option value='College of Arts and Letters'>College of Arts and Letters</option><option value='College of Business Administration'>College of Business Administration</option><option value='College of Communication and Information Technology'>College of Communication and Information Technology</option><option value='College of Criminal Justice Education'>College of Criminal Justice Education</option><option value='College of Education'>College of Education</option><option value='College of Engineering'>College of Engineering</option><option value='College of Hospitality and Tourism Management'>College of Hospitality and Tourism Management</option><option value='College of Industrial Technology'>College of Industrial Technology</option><option value='College of Law'>College of Law</option><option value='College of Nursing'>College of Nursing</option><option value='College of Science'>College of Science</option><option value='College of Social Sciences and Philosophy'>College of Social Sciences and Philosophy</option><option value='College of Sports, Exercise and Recreation'>College of Sports, Exercise and Recreation</option><option value='Graduate School'>Graduate School</option><option value='Laboratory High School'>Laboratory High School</option><option value='' disabled='disabled'>College Libraries</option><option value='College of Architecture and Fine Arts Library'>College of Architecture and Fine Arts Library</option><option value='College of Arts and Letters Library'>College of Arts and Letters Library</option><option value='College of Communication and Information Technology Library'>College of Communication and Information Technology Library</option><option value='College of Education Library'>College of Education Library</option><option value='College of Engineering Library'>College of Engineering Library</option><option value='College of Hospitality and Tourism Management Library'>College of Hospitality and Tourism Management Library</option><option value='College of Industrial Technology Library'>College of Industrial Technology Library</option><option value='College of Law Library'>College of Law Library</option><option value='College of Nursing Library'>College of Nursing Library</option><option value='College of Science Library'>College of Science Library</option><option value='College of Social Sciences and Philosophy Library'>College of Social Sciences and Philosophy Library</option><option value='Graduate School Library'>Graduate School Library</option><option value='' disabled='disabled'>Bulsu Offices</option><option value='Accounting'>Accounting</option><option value='Admission'>Admission</option><option value='Alumni'>Alumni</option><option value='Budget Office'>Budget Office</option><option value='Cashier'>Cashier</option><option value='Center for Bulacan Studies'>Center for Bulacan Studies</option><option value='Central Receiving Unit (Operator)'>Central Receiving Unit (Operator)</option><option value='Chancellor - Main'>Chancellor - Main</option><option value='Chief Admin Officer'>Chief Admin Officer</option><option value='Chief Finance Officer'>Chief Finance Officer</option><option value='Clinic'>Clinic</option><option value='Communications Office'>Communications Office</option><option value='Confucius Institute'>Confucius Institute</option><option value='Electrical Office'>Electrical Office</option><option value='Extension Office'>Extension Office</option><option value='Food Testing Lab'>Food Testing Lab</option><option value='Gate 1'>Gate 1</option><option value='General Services - Facilities Management and Maintenance Office (FMMO)'>General Services - Facilities Management and Maintenance Office (FMMO)</option><option value='Guidance Center'>Guidance Center</option><option value='Hostel'>Hostel</option><option value='Hostel Annex'>Hostel Annex</option><option value='Human Resource Management Office (HRMO) - Payroll'>Human Resource Management Office (HRMO) - Payroll</option><option value='Management Information System (MIS)'>Management Information System (MIS)</option><option value='National Service Training Program (NSTP)'>National Service Training Program (NSTP)</option><option value='Planning and Information'>Planning and Information</option><option value='Procurement Office (BAC)'>Procurement Office (BAC)</option><option value='Project Management Office (PMO)'>Project Management Office (PMO)</option><option value='Public Assistance Desk (Admin)'>Public Assistance Desk (Admin)</option><option value='Records Office'>Records Office</option><option value='Registrar\'s Office'>Registrar\'s Office</option><option value='Research Office'>Research Office</option><option value='Scholarship Office'>Scholarship Office</option><option value='Sports Director - Valencia Hall'>Sports Director - Valencia Hall</option><option value='Student Organization'>Student Organization</option><option value='Student Publication'>Student Publication</option><option value='Supply Office'>Supply Office</option><option value='' disabled='disabled'>Satellite Campus</option> <option value='Bustos Campus'>Bustos Campus</option><option value='Hagonoy Campus'>Hagonoy Campus</option><option value='Meneses Campus'>Meneses Campus</option><option value='Pulilan Extension'>Pulilan Extension</option><option value='Sarmiento Campus'>Sarmiento Campus</option></select></td><td><input type='number' class='distribution_quantity'></td><td><input type='text' class='received_by'></td><td><button type='button' class='btnRemove' style='background-color: #b50505; color: white; border: none; border-radius: 2px; padding: 10px;'>Remove</button></td></tr>");
+
+            $("#done").removeAttr("disabled");
+            $("#done").css("background-color", "green");
+        });
+    </script>
+
+    <script>    
+        $(document).on("click", ".btnRemove", function (){
+            $(this).closest("tr").remove();
+
+            if($("#table-body").children().length <= 0) {
+                $("#done").prop("disabled", true);
+                $("#done").css("background-color", "gray");
+            }
+        });
+    </script>
+
+    <script>
+        $(document).on("click", "#done", function () {
+            var arr_id = [];
+            var arr_name = [];
+            var arr_brand = [];
+            var arr_unit = [];
+            var arr_description = [];
+            var arr_quantity = [];
+            var arr_distributed_date = [];
+            var arr_location = [];
+            var arr_distribution_quantity = [];
+            var arr_received_by = [];
+
+            $('#selected-supply tr').each(function (a, b) {
+                var id = $('.id', b).text();
+                var name = $('.name', b).text();
+                var brand = $('.brand', b).text();
+                var unit = $(".unit", b).text();
+                var description = $(".description", b).text();
+                var quantity = $(".quantity", b).text();
+                var distributed_date = $(".distributed_date", b).val();
+                var location = $(".location", b).val();
+                var distribution_quantity = $(".distribution_quantity", b).val();
+                var received_by = $(".received_by", b).val();
+
+                if(id != "") {
+                    arr_id.push(id);
+                    arr_name.push(name);
+                    arr_brand.push(brand);
+                    arr_unit.push(unit);
+                    arr_description.push(description);
+                    arr_quantity.push(quantity);
+                    arr_distributed_date.push(distributed_date);
+                    arr_location.push(location);
+                    arr_distribution_quantity.push(distribution_quantity);
+                    arr_received_by.push(received_by);
+                }
+
+                // for(var i = 0; i < arr_id.length; i++) {
+                //     console.log(arr_id[i] + " " + arr_name[i] + " " + arr_brand[i] + " " + arr_unit[i] + " " + arr_distributed_date[i] + " " + arr_quantity[i] + " " + arr_description[i] + " " + arr_location[i] + " " + arr_distribution_quantity[i] + " " + arr_received_by[i]);
+                // }
+            });
+
+            $.ajax ({
+                type: "POST",
+                url: 'viewSupplies/toDistributeSupply.php',
+                data: {
+                    id: arr_id,
+                    name: arr_name,
+                    brand: arr_brand,
+                    unit: arr_unit,
+                    description: arr_description,
+                    quantity: arr_quantity,
+                    distributed_date: arr_distributed_date,
+                    location: arr_location,
+                    distribution_quantity: arr_distribution_quantity, 
+                    received_by: arr_received_by
+                },
+                success: function(data) {
+                    window.location.href = "reports/supplyReceipt.php";
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr);
+                }
+            });
+        });
+    </script>
 
     <script>
         function resetSupplyForm() {
             document.getElementById("add-supply").reset();
         }
     </script>
-
     <script>
         function changeUnit(e){
             document.getElementById("supply_unit_edit").value = e.target.value;
@@ -703,12 +335,6 @@
             unset($_SESSION["icon"]);
         }
     ?>
-
-    <script>
-        function resetDistribution() {
-            document.getElementById("supply-distribute").reset();
-        }
-    </script>
 
     <style>
         .error {
